@@ -1,7 +1,7 @@
 package com.restaurant.tastyservice.controller;
 
 import com.restaurant.tastyservice.domain.FoodNotFoundException;
-import com.restaurant.tastyservice.service.FoodService;
+import com.restaurant.tastyservice.domain.FoodService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

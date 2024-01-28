@@ -3,13 +3,13 @@ package com.restaurant.tastyservice.domain;
 
 import com.restaurant.tastyservice.config.DataConfig;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jdbc.core.JdbcAggregateTemplate;
-
+import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.Test;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -17,6 +17,7 @@ import java.util.stream.StreamSupport;
 @Import(DataConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJdbcTest
+@ActiveProfiles("integration")
 public class FoodRepositoryJdbcTests {
     @Autowired
     private FoodRepository foodRepository;
@@ -25,8 +26,8 @@ public class FoodRepositoryJdbcTests {
 
     @Test
     void findAllFood() {
-        var food1 = Food.of("4546745467", "test desc", 4.6);
-        var food2 = Food.of("4534235467", "test desc 2", 4.3);
+        var food1 = Food.of("4546745422", "test desc", 4.6);
+        var food2 = Food.of("4534235433", "test desc 2", 4.3);
         jdbcAggregateTemplate.insert(food1);
         jdbcAggregateTemplate.insert(food2);
 
@@ -39,7 +40,7 @@ public class FoodRepositoryJdbcTests {
 
     @Test
     void findFoodByRefWhenExisting() {
-        var foodRef = "4546745467";
+        var foodRef = "4546745411";
         var food = Food.of(foodRef, "test desc", 4.6);
         jdbcAggregateTemplate.insert(food);
 
@@ -51,7 +52,7 @@ public class FoodRepositoryJdbcTests {
 
     @Test
     void findFoodByRefWhenNotExisting() {
-        Optional<Food> actualFood = foodRepository.findByRef("4546745467");
+        Optional<Food> actualFood = foodRepository.findByRef("4546745468");
         Assertions.assertThat(actualFood).isEmpty();
     }
 
@@ -68,13 +69,13 @@ public class FoodRepositoryJdbcTests {
 
     @Test
     void existsByRefWhenNotExisting() {
-        boolean existing = foodRepository.existsByRef("4546745467");
+        boolean existing = foodRepository.existsByRef("4546745444");
         Assertions.assertThat(existing).isFalse();
     }
 
     @Test
     void deleteByRef() {
-        var foodRef = "4546745467";
+        var foodRef = "4546745455";
         var foodToCreate = Food.of(foodRef, "test desc", 4.6);
         var persistedFood = jdbcAggregateTemplate.insert(foodToCreate);
 

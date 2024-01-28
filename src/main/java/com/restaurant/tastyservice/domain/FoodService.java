@@ -1,4 +1,4 @@
-package com.restaurant.tastyservice.service;
+package com.restaurant.tastyservice.domain;
 
 
 import com.restaurant.tastyservice.domain.Food;
@@ -39,7 +39,7 @@ public class FoodService {
     public Food editFoodDetails(Food food, String ref) {
         return foodRepository.findByRef(ref).map(foundFood -> {
                     var foodToUpdate = new Food(foundFood.id(), foundFood.ref(), food.description(),
-                            food.price(), foundFood.version(), foundFood.createdDate(), foundFood.lastModifiedDate());
+                            food.price(), food.chef(), foundFood.version(), foundFood.createdDate(), foundFood.lastModifiedDate());
                     return foodRepository.save(foodToUpdate);
                 }
         ).orElseThrow(() -> new FoodNotFoundException(ref));

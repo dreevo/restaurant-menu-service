@@ -5,11 +5,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Profile("integration")
+@ActiveProfiles("integration")
 class TastyServiceApplicationTests {
 
     @Autowired
@@ -18,7 +18,7 @@ class TastyServiceApplicationTests {
 
     @Test
     void whenGetRequestWithRefThenFoodReturned() {
-        var foodRef = "4546745461";
+        var foodRef = "4546745440";
         var foodToCreate = Food.of(foodRef, "desc", 5.5);
         Food expectedFood = webTestClient
                 .post()
@@ -42,7 +42,7 @@ class TastyServiceApplicationTests {
 
     @Test
     void whenPostRequestThenFoodCreated() {
-        var expectedFood = Food.of("4546745462", "desc", 5.5);
+        var expectedFood = Food.of("4546745430", "desc", 5.5);
         webTestClient.post().uri("/food").bodyValue(expectedFood)
                 .exchange()
                 .expectStatus().isCreated()
@@ -55,7 +55,7 @@ class TastyServiceApplicationTests {
 
     @Test
     void whenPutRequestThenFoodUpdated() {
-        var foodRef = "4546745463";
+        var foodRef = "4546745420";
         var foodToCreate = Food.of(foodRef, "desc", 5.5);
         Food createdFood = webTestClient
                 .post()
@@ -65,7 +65,7 @@ class TastyServiceApplicationTests {
                 .expectStatus().isCreated()
                 .expectBody(Food.class).value(food -> Assertions.assertThat(food).isNotNull())
                 .returnResult().getResponseBody();
-        var foodToUpdate = new Food(createdFood.id(), createdFood.ref(), createdFood.description(), 7.5,
+        var foodToUpdate = new Food(createdFood.id(), createdFood.ref(), createdFood.description(), 7.5,createdFood.chef(),
                 createdFood.version(), createdFood.createdDate(), createdFood.lastModifiedDate());
 
         webTestClient
@@ -83,7 +83,7 @@ class TastyServiceApplicationTests {
 
     @Test
     void whenDeleteRequestThenFoodDeleted() {
-        var foodRef = "4546745464";
+        var foodRef = "4546745410";
         var foodToCreate = Food.of(foodRef, "desc", 5.5);
         webTestClient
                 .post()
@@ -104,7 +104,7 @@ class TastyServiceApplicationTests {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody(String.class).value(errorMessage ->
-                        Assertions.assertThat(errorMessage).isEqualTo("The food with ref " + foodRef + " is not found")
+                        Assertions.assertThat(errorMessage).isEqualTo("The food with ref " + foodRef + " was not found.")
                 );
     }
 

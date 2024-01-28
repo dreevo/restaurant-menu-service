@@ -31,6 +31,8 @@ public record Food(
         )
         Double price,
 
+        String chef,
+
         @Version
         int version,
 
@@ -46,7 +48,7 @@ public record Food(
             String ref, String description, Double price
     ) {
         return new Food(
-                null, ref, description, price, 0, null, null
+                null, ref, description, price, "MrChef", 0,null, null
         );
     }
 

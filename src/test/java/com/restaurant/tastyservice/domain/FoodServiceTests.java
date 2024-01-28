@@ -1,6 +1,5 @@
 package com.restaurant.tastyservice.domain;
 
-import com.restaurant.tastyservice.service.FoodService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +36,7 @@ public class FoodServiceTests {
         var ref = "4546745467";
         when(foodRepository.findByRef(ref)).thenReturn(Optional.empty());
         Assertions.assertThatThrownBy(() -> foodService.viewFoodDetails(ref))
-                .isInstanceOf(FoodAlreadyExistsException.class)
+                .isInstanceOf(FoodNotFoundException.class)
                 .hasMessage("The food with ref " + ref + " was not found.");
     }
 }

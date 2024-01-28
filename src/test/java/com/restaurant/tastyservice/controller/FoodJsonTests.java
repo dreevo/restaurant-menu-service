@@ -19,7 +19,7 @@ public class FoodJsonTests {
     @Test
     void testSerialize() throws Exception {
         Instant now = Instant.now();
-        var expectedFood = new Food(6598L, "4546745467", "desc", 5.5, 24, now, now);
+        var expectedFood = new Food(6598L, "4546745467", "desc", 5.5, "MrChef", 24, now, now);
         var jsonContent = json.write(expectedFood);
         Assertions.assertThat(jsonContent).extractingJsonPathNumberValue("@.price")
                 .isEqualTo(expectedFood.price());
@@ -27,12 +27,14 @@ public class FoodJsonTests {
                 .isEqualTo(expectedFood.ref());
         Assertions.assertThat(jsonContent).extractingJsonPathValue("@.description")
                 .isEqualTo(expectedFood.description());
+        Assertions.assertThat(jsonContent).extractingJsonPathValue("@.chef")
+                .isEqualTo(expectedFood.chef());
         Assertions.assertThat(jsonContent).extractingJsonPathNumberValue("@.id")
-                .isEqualTo(expectedFood.id());
+                .isEqualTo(expectedFood.id().intValue());
         Assertions.assertThat(jsonContent).extractingJsonPathValue("@.createdDate")
-                .isEqualTo(expectedFood.createdDate());
+                .isEqualTo(expectedFood.createdDate().toString());
         Assertions.assertThat(jsonContent).extractingJsonPathValue("@.lastModifiedDate")
-                .isEqualTo(expectedFood.lastModifiedDate());
+                .isEqualTo(expectedFood.lastModifiedDate().toString());
     }
 
     @Test
@@ -44,15 +46,16 @@ public class FoodJsonTests {
                 "id": 566,
                 "ref" : "4546745467",
                 "description" : "this is a description",
-                "price" : 5.2
+                "price" : 5.2,
+                "chef" : "MrChef",
                 "createdDate": "2023-03-05T23:40:32.145029Z",
-                "lastModifiedDate": "2021-08-07T15:50:22.136029Z",
+                "lastModifiedDate": "2023-03-05T23:40:32.145029Z",
                 "version": 23
                 }
                 """;
         Assertions.assertThat(json.parse(content)).usingRecursiveComparison()
                 .isEqualTo(new Food(566L, "4546745467",
-                        "this is a description", 5.2,
+                        "this is a description", 5.2, "MrChef",
                         23, createdAt, lastModifiedAt));
     }
 }

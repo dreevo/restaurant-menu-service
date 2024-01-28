@@ -57,12 +57,11 @@ public class FoodValidationTests {
     void whenPriceNotDefinedThenValidationFails() {
         var food = Food.of("4546745467", "desc", null);
         Set<ConstraintViolation<Food>> violations = validator.validate(food);
-        Assertions.assertThat(violations).hasSize(2);
+        Assertions.assertThat(violations).hasSize(1);
         List<String> constraintViolationMessages = violations.stream()
                 .map(ConstraintViolation::getMessage).collect(Collectors.toList());
         Assertions.assertThat(constraintViolationMessages)
-                .contains("The food price must be defined.")
-                .contains("The food price must be greater than zero.");
+                .contains("The food price must be defined.");
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.restaurant.tastyservice.controller;
 
 import com.restaurant.tastyservice.domain.Food;
-import com.restaurant.tastyservice.service.FoodService;
+import com.restaurant.tastyservice.domain.FoodService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
