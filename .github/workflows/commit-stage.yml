@@ -3,7 +3,7 @@ on: push
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: restaurant/tasty-service
+  IMAGE_NAME: dreevo/tasty-service
   VERSION: latest
 
 jobs:
