@@ -39,7 +39,8 @@ public class FoodService {
     public Food editFoodDetails(Food food, String ref) {
         return foodRepository.findByRef(ref).map(foundFood -> {
                     var foodToUpdate = new Food(foundFood.id(), foundFood.ref(), food.description(),
-                            food.price(), food.chef(), foundFood.version(), foundFood.createdDate(), foundFood.lastModifiedDate());
+                            food.price(), food.chef(), foundFood.version(), foundFood.createdDate(), foundFood.lastModifiedDate()
+                            , foundFood.createdBy(), foundFood.lastModifiedBy());
                     return foodRepository.save(foodToUpdate);
                 }
         ).orElseThrow(() -> new FoodNotFoundException(ref));

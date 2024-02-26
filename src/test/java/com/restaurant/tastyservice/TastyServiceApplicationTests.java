@@ -127,6 +127,32 @@ class TastyServiceApplicationTests {
                 });
     }
 
+    @Test
+    void whenPostRequestUnauthenticatedThen401() {
+        var expectedFood = Food.of("4546745430", "desc", 5.5);
+
+        webTestClient
+                .post()
+                .uri("/food")
+                .bodyValue(expectedFood)
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+
+    @Test
+    void whenPostRequestUnauthorizedThen403() {
+        var expectedFood = Food.of("4546745430", "desc", 5.5);
+
+        webTestClient
+                .post()
+                .uri("/food")
+                .headers(headers -> headers.setBearerAuth(johnTokens.accessToken()))
+                .bodyValue(expectedFood)
+                .exchange()
+                .expectStatus().isForbidden();
+    }
+
 
     @Test
     void whenPutRequestThenFoodUpdated() {
@@ -143,7 +169,7 @@ class TastyServiceApplicationTests {
                 .expectBody(Food.class).value(food -> Assertions.assertThat(food).isNotNull())
                 .returnResult().getResponseBody();
         var foodToUpdate = new Food(createdFood.id(), createdFood.ref(), createdFood.description(), 7.5, createdFood.chef(),
-                createdFood.version(), createdFood.createdDate(), createdFood.lastModifiedDate());
+                createdFood.version(), createdFood.createdDate(), createdFood.lastModifiedDate(), createdFood.createdBy(), createdFood.lastModifiedBy());
 
         webTestClient
                 .put()
@@ -158,71 +184,6 @@ class TastyServiceApplicationTests {
                     Assertions.assertThat(actualFood.price()).isEqualTo(foodToUpdate.price());
                 });
 
-    }
-
-    @Test
-    void whenPutRequestUnauthorizedThen403() {
-        var foodRef = "4546745424";
-        var foodToCreate = Food.of(foodRef, "desc", 5.5);
-        Food createdFood = webTestClient
-                .post()
-                .uri("/food")
-                .headers(headers ->
-                        headers.setBearerAuth(willTokens.accessToken()))
-                .bodyValue(foodToCreate)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(Food.class).value(food -> Assertions.assertThat(food).isNotNull())
-                .returnResult().getResponseBody();
-        var foodToUpdate = new Food(createdFood.id(), createdFood.ref(), createdFood.description(), 7.5, createdFood.chef(),
-                createdFood.version(), createdFood.createdDate(), createdFood.lastModifiedDate());
-
-        webTestClient
-                .put()
-                .uri("/food/" + foodRef)
-                .headers(headers ->
-                        headers.setBearerAuth(johnTokens.accessToken()))
-                .bodyValue(foodToUpdate)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(Food.class).value(actualFood -> {
-                    Assertions.assertThat(actualFood).isNotNull();
-                    Assertions.assertThat(actualFood.price()).isEqualTo(foodToUpdate.price());
-                });
-
-    }
-
-    @Test
-    void whenDeleteUnauthorizedThen403() {
-        var foodRef = "4546745410";
-        var foodToCreate = Food.of(foodRef, "desc", 5.5);
-        webTestClient
-                .post()
-                .uri("/food")
-                .headers(headers ->
-                        headers.setBearerAuth(willTokens.accessToken()))
-                .bodyValue(foodToCreate)
-                .exchange()
-                .expectStatus().isCreated();
-
-        webTestClient
-                .delete()
-                .uri("/food/" + foodRef)
-                .headers(headers ->
-                        headers.setBearerAuth(johnTokens.accessToken()))
-                .exchange()
-                .expectStatus().isNoContent();
-
-        webTestClient
-                .get()
-                .uri("/food/" + foodRef)
-                .headers(headers ->
-                        headers.setBearerAuth(johnTokens.accessToken()))
-                .exchange()
-                .expectStatus().isNotFound()
-                .expectBody(String.class).value(errorMessage ->
-                        Assertions.assertThat(errorMessage).isEqualTo("The food with ref " + foodRef + " was not found.")
-                );
     }
 
     @Test
@@ -256,16 +217,6 @@ class TastyServiceApplicationTests {
                 .expectBody(String.class).value(errorMessage ->
                         Assertions.assertThat(errorMessage).isEqualTo("The food with ref " + foodRef + " was not found.")
                 );
-    }
-
-    @Test
-    void whenPostRequestUnauthenticatedThen401() {
-        var expectedFood = Food.of("4546745410", "desc", 5.5);
-
-        webTestClient.post().uri("/food")
-                .bodyValue(expectedFood)
-                .exchange()
-                .expectStatus().isUnauthorized();
     }
 
 

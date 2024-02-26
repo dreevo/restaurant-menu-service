@@ -1,53 +1,50 @@
 plugins {
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.13.RELEASE'
     id 'java'
-    id 'org.springframework.boot' version '3.2.2'
-    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.restaurant'
 version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
 
-java {
-    sourceCompatibility = '17'
-}
+description = 'Provides functionality for managing the food in the restaurant menu.'
 
-ext {
-    set('springCloudVersion', "2023.0.0")
-    set('testcontainersVersion', "1.17.3")
-    set('testKeycloakVersion', "2.3.0")
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
     mavenCentral()
 }
 
+ext {
+    set('springCloudVersion', "2021.0.3")
+    set('testcontainersVersion', "1.17.3")
+    set('testKeycloakVersion', "2.3.0")
+}
+
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.retry:spring-retry'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.flywaydb:flyway-core'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
     runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
-    testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
     testImplementation "com.github.dasniko:testcontainers-keycloak:${testKeycloakVersion}"
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
 }
 
 dependencyManagement {
@@ -57,15 +54,13 @@ dependencyManagement {
     }
 }
 
-
 bootRun {
     systemProperty 'spring.profiles.active', 'testdata'
 }
 
 bootBuildImage {
-    builder = "docker.io/paketobuildpacks/builder-jammy-base"
     imageName = "${project.name}"
-    environment = ["BP_JVM_VERSION" : "17.*"]
+    environment = ["BP_JVM_VERSION": "17.*"]
 
     docker {
         publishRegistry {
@@ -76,4 +71,6 @@ bootBuildImage {
     }
 }
 
-
+tasks.named('test') {
+    useJUnitPlatform()
+}

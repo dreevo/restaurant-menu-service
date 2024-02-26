@@ -33,3 +33,5 @@ spec:
               value: jdbc:postgresql://restaurant-postgres/restaurantdb_tasty
             - name: SPRING_PROFILES_ACTIVE
               value: testdata
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: http://polar-keycloak/realms/restaurant

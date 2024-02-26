@@ -1,16 +1,18 @@
 package com.restaurant.tastyservice.domain;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FoodValidationTests {
 
@@ -27,17 +29,17 @@ public class FoodValidationTests {
     void whenAllFieldsCorrectThenValidationSucceeds() {
         var food = Food.of("4546745467", "desc", 5.5);
         Set<ConstraintViolation<Food>> violations = validator.validate(food);
-        Assertions.assertThat(violations).isEmpty();
+        assertThat(violations).isEmpty();
     }
 
     @Test
     void whenRefNotDefinedThenValidationFails() {
         var food = Food.of("", "desc", 5.5);
         Set<ConstraintViolation<Food>> violations = validator.validate(food);
-        Assertions.assertThat(violations).hasSize(2);
+        assertThat(violations).hasSize(2);
         List<String> constraintViolationMessages = violations.stream()
                 .map(ConstraintViolation::getMessage).collect(Collectors.toList());
-        Assertions.assertThat(constraintViolationMessages)
+        assertThat(constraintViolationMessages)
                 .contains("The food ref must be defined.")
                 .contains("The ref format must be valid.");
     }
@@ -46,10 +48,10 @@ public class FoodValidationTests {
     void whenDescriptionNotDefinedThenValidationFails() {
         var food = Food.of("4546745467", "", 5.5);
         Set<ConstraintViolation<Food>> violations = validator.validate(food);
-        Assertions.assertThat(violations).hasSize(1);
+        assertThat(violations).hasSize(1);
         List<String> constraintViolationMessages = violations.stream()
                 .map(ConstraintViolation::getMessage).collect(Collectors.toList());
-        Assertions.assertThat(constraintViolationMessages)
+        assertThat(constraintViolationMessages)
                 .contains("The food description must be defined.");
     }
 
@@ -57,10 +59,10 @@ public class FoodValidationTests {
     void whenPriceNotDefinedThenValidationFails() {
         var food = Food.of("4546745467", "desc", null);
         Set<ConstraintViolation<Food>> violations = validator.validate(food);
-        Assertions.assertThat(violations).hasSize(1);
+        assertThat(violations).hasSize(1);
         List<String> constraintViolationMessages = violations.stream()
                 .map(ConstraintViolation::getMessage).collect(Collectors.toList());
-        Assertions.assertThat(constraintViolationMessages)
+        assertThat(constraintViolationMessages)
                 .contains("The food price must be defined.");
     }
 
@@ -68,10 +70,10 @@ public class FoodValidationTests {
     void whenPriceDefinedButNotPositiveThenValidationFails() {
         var food = Food.of("4546745467", "desc", -5.5);
         Set<ConstraintViolation<Food>> violations = validator.validate(food);
-        Assertions.assertThat(violations).hasSize(1);
+        assertThat(violations).hasSize(1);
         List<String> constraintViolationMessages = violations.stream()
                 .map(ConstraintViolation::getMessage).collect(Collectors.toList());
-        Assertions.assertThat(constraintViolationMessages)
+        assertThat(constraintViolationMessages)
                 .contains("The food price must be greater than zero.");
     }
 
@@ -80,7 +82,7 @@ public class FoodValidationTests {
     void whenRefDefinedButIncorrectThenValidationFails() {
         var food = Food.of("45467454", "desc", 5.5);
         Set<ConstraintViolation<Food>> violations = validator.validate(food);
-        Assertions.assertThat(violations).hasSize(1);
-        Assertions.assertThat(violations.iterator().next().getMessage()).isEqualTo("The ref format must be valid.");
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("The ref format must be valid.");
     }
 }

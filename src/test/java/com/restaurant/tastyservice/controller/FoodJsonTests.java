@@ -9,6 +9,8 @@ import org.springframework.boot.test.json.JacksonTester;
 
 import java.time.Instant;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @JsonTest
 public class FoodJsonTests {
 
@@ -19,22 +21,29 @@ public class FoodJsonTests {
     @Test
     void testSerialize() throws Exception {
         Instant now = Instant.now();
-        var expectedFood = new Food(6598L, "4546745467", "desc", 5.5, "MrChef", 24, now, now);
+        var expectedFood = new Food(6598L, "4546745467", "desc", 5.5,
+                "MrChef", 24, now, now, "jack", "james");
         var jsonContent = json.write(expectedFood);
-        Assertions.assertThat(jsonContent).extractingJsonPathNumberValue("@.price")
+        assertThat(jsonContent).extractingJsonPathNumberValue("@.price")
                 .isEqualTo(expectedFood.price());
-        Assertions.assertThat(jsonContent).extractingJsonPathValue("@.ref")
+        assertThat(jsonContent).extractingJsonPathValue("@.ref")
                 .isEqualTo(expectedFood.ref());
-        Assertions.assertThat(jsonContent).extractingJsonPathValue("@.description")
+        assertThat(jsonContent).extractingJsonPathValue("@.description")
                 .isEqualTo(expectedFood.description());
-        Assertions.assertThat(jsonContent).extractingJsonPathValue("@.chef")
+        assertThat(jsonContent).extractingJsonPathValue("@.chef")
                 .isEqualTo(expectedFood.chef());
-        Assertions.assertThat(jsonContent).extractingJsonPathNumberValue("@.id")
+        assertThat(jsonContent).extractingJsonPathNumberValue("@.id")
                 .isEqualTo(expectedFood.id().intValue());
-        Assertions.assertThat(jsonContent).extractingJsonPathValue("@.createdDate")
+        assertThat(jsonContent).extractingJsonPathValue("@.createdDate")
                 .isEqualTo(expectedFood.createdDate().toString());
-        Assertions.assertThat(jsonContent).extractingJsonPathValue("@.lastModifiedDate")
+        assertThat(jsonContent).extractingJsonPathValue("@.lastModifiedDate")
                 .isEqualTo(expectedFood.lastModifiedDate().toString());
+        assertThat(jsonContent).extractingJsonPathStringValue("@.createdBy")
+                .isEqualTo(expectedFood.createdBy());
+        assertThat(jsonContent).extractingJsonPathStringValue("@.lastModifiedBy")
+                .isEqualTo(expectedFood.lastModifiedBy());
+        assertThat(jsonContent).extractingJsonPathNumberValue("@.version")
+                .isEqualTo(expectedFood.version());
     }
 
     @Test
@@ -50,12 +59,14 @@ public class FoodJsonTests {
                 "chef" : "MrChef",
                 "createdDate": "2023-03-05T23:40:32.145029Z",
                 "lastModifiedDate": "2023-03-05T23:40:32.145029Z",
+                "createdBy": "jack",
+                "lastModifiedBy": "james",
                 "version": 23
                 }
                 """;
         Assertions.assertThat(json.parse(content)).usingRecursiveComparison()
                 .isEqualTo(new Food(566L, "4546745467",
                         "this is a description", 5.2, "MrChef",
-                        23, createdAt, lastModifiedAt));
+                        23, createdAt, lastModifiedAt, "jack", "james"));
     }
 }
