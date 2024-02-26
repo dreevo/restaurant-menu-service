@@ -162,7 +162,7 @@ class TastyServiceApplicationTests {
 
     @Test
     void whenPutRequestUnauthorizedThen403() {
-        var foodRef = "4546745420";
+        var foodRef = "4546745424";
         var foodToCreate = Food.of(foodRef, "desc", 5.5);
         Food createdFood = webTestClient
                 .post()
