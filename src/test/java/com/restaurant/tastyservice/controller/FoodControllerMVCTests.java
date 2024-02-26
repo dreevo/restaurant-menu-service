@@ -1,16 +1,15 @@
 package com.restaurant.tastyservice.controller;
 
-import com.restaurant.tastyservice.domain.FoodNotFoundException;
 import com.restaurant.tastyservice.domain.FoodService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(FoodController.class)
 public class FoodControllerMVCTests {
@@ -21,12 +20,17 @@ public class FoodControllerMVCTests {
     @MockBean
     private FoodService foodService;
 
+
+
     @Test
-    void whenGetFoodNotExistingThenShouldReturn404() throws Exception {
-        String ref = "658778787";
-        given(foodService.viewFoodDetails(ref)).willThrow(FoodNotFoundException.class);
-        mockMvc.perform(MockMvcRequestBuilders.get("/food/" + ref))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    void whenDeleteFoodWithEmployeeRoleThenShouldReturn204()
+            throws Exception {
+        var ref = "658778787";
+        mockMvc
+                .perform(MockMvcRequestBuilders.delete("/food/" + ref)
+                        .with(SecurityMockMvcRequestPostProcessors.jwt()
+                                .authorities(new SimpleGrantedAuthority("ROLE_employee"))))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
 }
