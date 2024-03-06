@@ -24,6 +24,7 @@ ext {
     set('springCloudVersion', "2021.0.3")
     set('testcontainersVersion', "1.17.3")
     set('testKeycloakVersion', "2.3.0")
+    set('otelVersion', "1.17.0")
 }
 
 dependencies {
@@ -38,6 +39,7 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -74,4 +76,8 @@ bootBuildImage {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+springBoot {
+    buildInfo()
 }
