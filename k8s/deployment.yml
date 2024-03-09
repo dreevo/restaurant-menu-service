@@ -38,7 +38,10 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: testdata
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
-              value: http://polar-keycloak/realms/restaurant
+              value: http://restaurant-keycloak/realms/restaurant
+          volumeMounts:
+            - mountPath: /workspace/config
+              name: tasty-config-volume
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
@@ -51,3 +54,7 @@ spec:
               port: 9001
             initialDelaySeconds: 5
             periodSeconds: 15
+      volumes:
+        - name: tasty-config-volume
+          configMap:
+            name: tasty-config
